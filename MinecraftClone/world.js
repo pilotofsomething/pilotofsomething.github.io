@@ -19,7 +19,7 @@ class World {
 			this.foreground[i] = new Array(height);
 			this.background[i] = new Array(height);
 		}
-		player = new Player((width / 2) * 32, -128);
+		player = new Player(Math.floor(width / 2) * 32, (this.getTerrainHeight(Math.floor(width / 2)) - 2) * 32);
 	}
 	getTerrainHeight(x) {
 		return Math.floor((1 - noise(x / (171.131 * (this.height / 256)))) * (this.height - 1));
