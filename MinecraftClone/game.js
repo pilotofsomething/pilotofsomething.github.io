@@ -8,6 +8,7 @@ inInventory = false;
 let pressed = 0;
 let space = false;
 let inWorld = false;
+let menu = false;
 let prevMouse = false;
 
 let worldWidthSlider = new Slider(0, 0, 200, 32, 64, 4096, 16, 256);
@@ -15,6 +16,11 @@ let worldHeightSlider = new Slider(0, 0, 200, 32, 64, 4096, 16, 64);
 let genWorldButton = new Button(0, 0, 200, 32, function() {});
 let loadWorldButton = new Button(0, 0, 200, 32, function() {});
 let importButton = new Button(0, 0, 200, 32, function() {});
+
+let saveButton = new Button(0, 0, 200, 32, function() {});
+let loadButton = new Button(0, 0, 200, 32, function() {});
+let exportButton = new Button(0, 0, 200, 32, function() {});
+let importButtonM = new Button(0, 0, 200, 32, function() {});
 saveExportArea = undefined;
 
 function setup() {
@@ -41,6 +47,25 @@ function setup() {
 		let input = window.prompt('Paste save data to import. Ctrl-V to paste.');
 		if(input !== null && input.length !== 0) loadGame(input);
 	});
+	saveButton = new Button(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 + 42, 200, 24, function() {
+		try {
+			localStorage.setItem('savedata', JSON.stringify(saveGame()));
+		} catch(ex) {
+			alert('Failed to save world. Try exporting it instead.');
+		}
+	});
+	loadButton = new Button(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 + 14, 200, 24, function() {
+		if(localStorage.getItem('savedata')) {
+			loadGame();
+		} else alert('No data to load.');
+	});
+	exportButton = new Button(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 - 14, 200, 24, function() {
+		dispExport(JSON.stringify(saveGame()));
+	});
+	importButtonM = new Button(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 - 42, 200, 24, function() {
+		let input = window.prompt('Paste save data to import. Ctrl-V to paste.');
+		if(input !== null && input.length !== 0) loadGame(input);
+	});
 }
 
 function draw() {
@@ -48,8 +73,10 @@ function draw() {
 	if(selectedRecipe < 0) selectedRecipe = player.getRecipes().length-1;
 	background(100, 100, 255);
 	if(inWorld) {
-		player.update();
-		world.update();
+		if(!menu) {
+			player.update();
+			world.update();
+		}
 		sX = player.x - (res.getScaledWidth() / 2) + 16;
 		sY = player.y - (res.getScaledHeight() / 2) + 32;
 		if(sX < 0) sX = 0;
@@ -59,6 +86,21 @@ function draw() {
 		res.drawRect(player.x - sX, player.y - sY, 32, 64, 0xFF000000);
 		world.render(false);
 		player.render();
+		if(menu) {
+			saveButton.update(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 - 42);
+			loadButton.update(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 - 14);
+			exportButton.update(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 + 14);
+			importButtonM.update(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 + 42);
+			res.drawRect(0, 0, res.getScaledWidth(), res.getScaledHeight(), 0x7F000000);
+			saveButton.render();
+			res.drawText('Save World', saveButton.x + (saveButton.width / 2) - (res.getScaledTextWidth(12, 'Save World') / 2), saveButton.y + 6, 12, 0xFFFFFFFF);
+			loadButton.render();
+			res.drawText('Load World', loadButton.x + (loadButton.width / 2) - (res.getScaledTextWidth(12, 'Load World') / 2), loadButton.y + 6, 12, 0xFFFFFFFF);
+			exportButton.render();
+			res.drawText('Export World', exportButton.x + (exportButton.width / 2) - (res.getScaledTextWidth(12, 'Export World') / 2), exportButton.y + 6, 12, 0xFFFFFFFF);
+			importButtonM.render();
+			res.drawText('Import World', importButtonM.x + (importButtonM.width / 2) - (res.getScaledTextWidth(12, 'Import World') / 2), importButtonM.y + 6, 12, 0xFFFFFFFF);
+		}
 	} else {
 		worldWidthSlider.update(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 - 82);
 	 	worldHeightSlider.update(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 - 54);
@@ -82,22 +124,14 @@ function draw() {
 }
 
 function keyPressed() {
-	if(inWorld) {
+	if(inWorld && !menu) {
 		if(key === 'A') {
 			pressed = -1;
 		} else if(key === 'D') {
 			pressed = 1;
 		} else if(key === ' ') {
 			space = true;
-		} else if(key === 'O') {
-			try {
-				localStorage.setItem('savedata', JSON.stringify(saveGame()));
-			} catch(ex) {
-				alert('Failed to save world. Try exporting it instead.');
-			}
-		} else if(key === 'I') {
-			dispExport(JSON.stringify(saveGame()));
-		} else if(key === 'U') {
+		} else if(key === 'H') {
 			hideExport();
 		} else if(key === 'E') {
 			if(inInventory && (chestGUI.currentChest !== undefined || furnaceGUI.currentFurnace !== undefined)) {
@@ -108,6 +142,11 @@ function keyPressed() {
 		if(keyCode === TAB) {
 			editbg = !editbg;
 			return false;
+		}
+	}
+	if(inWorld) {
+		if(keyCode == ESCAPE) {
+			menu = !menu;
 		}
 	}
 	if(keyCode !== 116 && keyCode !== 122 && keyCode !== 123 && keyCode !== CONTROL && key !== 'A' && key !== 'C') {
@@ -132,16 +171,18 @@ function keyReleased() {
 }
 
 function mouseWheel(e) {
-	if(!inInventory) {
-		if(e.delta > 0) {
-			selectedSlot++;
-		} else selectedSlot--;
-		if(selectedSlot > 10) selectedSlot = 0;
-		if(selectedSlot < 0) selectedSlot = 10;
-	} else if(player.getRecipes().length > 0) {
-		if(e.delta > 0) {
-			selectedRecipe++;
-		} else selectedRecipe--;
+	if(!menu) {
+		if(!inInventory) {
+			if(e.delta > 0) {
+				selectedSlot++;
+			} else selectedSlot--;
+			if(selectedSlot > 10) selectedSlot = 0;
+			if(selectedSlot < 0) selectedSlot = 10;
+		} else if(player.getRecipes().length > 0) {
+			if(e.delta > 0) {
+				selectedRecipe++;
+			} else selectedRecipe--;
+		}
 	}
 }
 
