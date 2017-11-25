@@ -60,7 +60,7 @@ function genTree(x, y, size) {
 	let tree = new Array(random() < 0.5 ? 5 : 7);
 	let treeF = new Array(tree.length);
 	let height = size + Math.floor(random(2, 3))
-	centerX = tree.length === 5 ? 2 : 3;
+	let centerX = tree.length === 5 ? 2 : 3;
 	for(let i=0;i<tree.length;i++) {
 		tree[i] = new Array(height);
 		treeF[i] = new Array(height);
