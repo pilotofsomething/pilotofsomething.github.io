@@ -55,3 +55,45 @@ function genOre(block, x, y, size) {
 		}
 	}
 }
+
+function genTree(x, y, size) {
+	let tree = new Array(random() < 0.5 ? 5 : 7);
+	let treeF = new Array(tree.length);
+	let height = size + Math.floor(random(2, 3))
+	centerX = tree.length === 5 ? 2 : 3;
+	for(let i=0;i<tree.length;i++) {
+		tree[i] = new Array(height);
+		treeF[i] = new Array(height);
+	}
+	for(let i=0;i<size;i++) {
+		tree[centerX][i] = wood.id;
+	}
+	let minLeavesY = Math.floor(random(1, 4));
+	for(let x=0;x<tree.length;x++) {
+		for(let y=0;y<tree[0].length;y++) {
+			if(y > minLeavesY) {
+				let i = Math.floor(map(y, tree[0].length-1, minLeavesY+1, 1, tree.length / 2) + 0.5)
+				if(x > centerX - i && x < centerX + i) {
+					if(tree[x][y] !== wood.id) {
+						tree[x][y] = leaves.id;
+					}
+					treeF[x][y] = leaves.id;
+				}
+			}
+		}
+	}
+	for(let x=0;x<tree.length;x++) {
+		tree[x] = tree[x].reverse();
+		treeF[x] = treeF[x].reverse();
+	}
+	for(let x1=0;x1<tree.length;x1++) {
+		for(let y1=0;y1<tree[0].length;y1++) {
+			let x2 = (x - Math.floor(tree.length/2)) + x1;
+			let y2 = (y - tree[0].length) + y1;
+			if(x2 >= 0 && x2 < world.width && y2 >= 0 && y2 < world.height) {
+				if(world.foreground[x2][y2] === -1 && treeF[x1][y1] !== undefined) world.foreground[x2][y2] = treeF[x1][y1];
+				if(world.background[x2][y2] === -1 && tree[x1][y1] !== undefined) world.background[x2][y2] = tree[x1][y1];
+			}
+		}
+	}
+}

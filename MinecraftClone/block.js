@@ -71,9 +71,17 @@ class BlockOre extends BlockStone {
 		super(id);
 	}
 	getDrop(item) {
-		return item !== undefined && item.getItem() instanceof ItemPickaxe  && this.id === 10 ? itemList[diamond.id] : undefined;
+		return item !== undefined && item.getItem() instanceof ItemPickaxe  && this.id === 10 ? itemList[diamond.id] : this.id === 11 ? itemList[coal.id] : undefined;
 	}
 
+}
+class BlockLeaves extends Block {
+	constructor(id) {
+		super(id);
+	}
+	getDrop(item) {
+		return undefined;
+	}
 }
 class BlockEntity {
 	constructor(x, y) {
@@ -162,7 +170,7 @@ class BlockEntityFurnace extends BlockEntity {
 					this.inputSlot.stack -= recipe.item.stack;
 					this.time = 0;
 				}
-			} else if(this.fuelSlot !== undefined){
+			} else if(this.fuelSlot !== undefined) {
 				if(this.fuelSlot.id === wood.id || this.fuelSlot.id === planks.id) {
 					this.burnTime = 450;
 					this.maxBurn = 450;
@@ -171,7 +179,13 @@ class BlockEntityFurnace extends BlockEntity {
 					this.burnTime = 300;
 					this.maxBurn = 300;
 					this.fuelSlot.stack--;
+				} else if(this.fuelSlot.id === coal.id) {
+					this.burnTime = 4800;
+					this.maxBurn = 4800;
+					this.fuelSlot.stack--;
 				}
+			} else {
+				if(this.time > 0) this.time--;
 			}
 		}
 		if(this.inputSlot !== undefined && this.inputSlot.stack < 1) this.inputSlot = undefined;
@@ -226,3 +240,5 @@ goldOre = new BlockCobble(7).setHardness(3.5);
 chest = new BlockChest(8).setHardness(2.0);
 furnace = new BlockFurnace(9).setHardness(2.4);
 diamondOre = new BlockOre(10).setHardness(5.5);
+coalOre = new BlockOre(11).setHardness(3.0);
+leaves = new BlockLeaves(12).setHardness(0.7);

@@ -21,6 +21,8 @@ function preload() {
 	loadImg('chest.png', 8);
 	loadImg('furnace.png', 9);
 	loadImg('diamond_ore.png', 10);
+	loadImg('coal_ore.png', 11);
+	loadImg('leaves.png', 12);
 	textures[32768] = loadImage('textures/item/stick.png');
 	textures[32769] = loadImage('textures/item/wood_pickaxe.png');
 	textures[32770] = loadImage('textures/item/wood_axe.png');
@@ -40,6 +42,7 @@ function preload() {
 	textures[32784] = loadImage('textures/item/diamond_pickaxe.png');
 	textures[32785] = loadImage('textures/item/diamond_axe.png');
 	textures[32786] = loadImage('textures/item/diamond_shovel.png');
+	textures[32787] = loadImage('textures/item/coal.png');
 	cell = loadImage('textures/gui/cell.png');
 	selectedCell = loadImage('textures/gui/cell_selected.png');
 }

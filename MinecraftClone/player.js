@@ -8,11 +8,11 @@ furnaceGUI = new GuiFurnace();
 class Player {
 	constructor(x, y) {
 		this.inventory = new Array(55);
-		for(let i=0;i<this.inventory.length;i++) {
-			if(itemList[i] !== undefined) {
-				this.inventory[i] = new ItemStack(itemList[i], itemList[i].maxStack, 0);
-			}
-		}
+		// for(let i=0;i<this.inventory.length;i++) {
+		// 	if(itemList[i] !== undefined) {
+		// 		this.inventory[i] = new ItemStack(itemList[i], itemList[i].maxStack, 0);
+		// 	}
+		// }
 		this.recipeSlot = undefined;
 		this.x = x;
 		this.y = y;

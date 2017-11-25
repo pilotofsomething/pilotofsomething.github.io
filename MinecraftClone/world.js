@@ -21,6 +21,9 @@ class World {
 		}
 		player = new Player((width / 2) * 32, -128);
 	}
+	getTerrainHeight(x) {
+		return Math.floor((1 - noise(x / (171.131 * (this.height / 256)))) * (this.height - 1));
+	}
 	generate() {
 		for(let x=0;x<this.width;x++) {
 			for(let y=0;y<this.height;y++) {
@@ -69,6 +72,13 @@ class World {
 			}
 		}
 		//Stage 5: Ores
+		for(let i=0;i<(this.width + this.height) * 0.6;i++) {
+			let x = Math.floor(random(this.width));
+			let y = this.height - Math.floor(random(this.height / 2));
+			if(this.foreground[x][y] === stone.id) {
+				genOre(coalOre, x, y, Math.floor(random(3, 6)) / 2);
+			}
+		}
 		for(let i=0;i<(this.width + this.height) * 0.4;i++) {
 			let x = Math.floor(random(this.width));
 			let y = this.height - Math.floor(random(this.height / 2));
@@ -89,6 +99,11 @@ class World {
 			if(this.foreground[x][y] === stone.id) {
 				genOre(diamondOre, x, y, Math.floor(random(2, 4)) / 2);
 			}
+		}
+		//Stage 6: Trees
+		for(let i=0;i<this.width * 0.2;i++) {
+			let x = Math.floor(random(this.width));
+			genTree(x, this.getTerrainHeight(x), Math.floor(random(5, 8)));
 		}
 		for(let x=0;x<this.width;x++) {
 			for(let y=0;y<this.height;y++) {
@@ -127,7 +142,7 @@ class World {
 								res.drawImage(breakAnim[3], (x * 32) - sX, (y * 32) - sY);
 							} else res.drawImage(breakAnim[4], (x * 32) - sX, (y * 32) - sY);
 						}
-					} else if(bg && this.foreground[x][y] < 0 && this.background[x][y] > -1) {
+					} else if(bg && (this.foreground[x][y] < 0 || this.foreground[x][y] === leaves.id) && this.background[x][y] > -1) {
 						let tex = Math.floor(this.background[x][y]);
 						res.drawImage(texturesBg[tex], (x * 32) - sX, (y * 32) - sY);
 						if(!inInventory && res.getScaledMouseX() >= (x * 32) - sX && res.getScaledMouseX() < ((x * 32) + 32) - sX && res.getScaledMouseY() >= (y * 32) - sY && res.getScaledMouseY() < ((y * 32) + 32) - sY) {

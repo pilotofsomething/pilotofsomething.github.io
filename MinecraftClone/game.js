@@ -86,6 +86,7 @@ function draw() {
 		res.drawRect(player.x - sX, player.y - sY, 32, 64, 0xFF000000);
 		world.render(false);
 		player.render();
+		if(editbg && !inInventory) res.drawText('Editing Background', 2, 54, 12, 0xFFFFFFFF);
 		if(menu) {
 			saveButton.update(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 - 42);
 			loadButton.update(res.getScaledWidth() / 2 - 100, res.getScaledHeight() / 2 - 14);

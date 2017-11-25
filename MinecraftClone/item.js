@@ -169,3 +169,4 @@ diamond = new Item(32783);
 diamondPick = new ItemPickaxe(32784, diamondMaterial);
 diamondAxe = new ItemAxe(32785, diamondMaterial);
 diamondShovel = new ItemShovel(32786, diamondMaterial);
+coal = new Item(32787);
